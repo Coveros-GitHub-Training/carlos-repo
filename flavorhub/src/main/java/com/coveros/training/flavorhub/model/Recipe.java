@@ -62,10 +62,10 @@ public class Recipe {
     private String imageUrl;
     
     @Column(name = "average_rating")
-    private Double averageRating = 0.0;
+    private Double averageRating;
     
     @Column(name = "rating_count")
-    private Integer ratingCount = 0;
+    private Integer ratingCount;
     
     public Recipe(String name, String description, Integer prepTime, Integer cookTime, 
                   Integer servings, String difficultyLevel, String cuisineType) {

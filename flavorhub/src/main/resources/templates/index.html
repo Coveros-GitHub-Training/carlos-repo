@@ -2024,6 +2024,13 @@
          */
         function showRatingWidget(button) {
             const recipeId = button.getAttribute('data-recipe-id');
+            
+            // Validate recipeId is a positive integer
+            if (!recipeId || !/^\d+$/.test(recipeId)) {
+                console.error('Invalid recipe ID');
+                return;
+            }
+            
             const widget = document.getElementById('rating-widget-' + recipeId);
             
             if (widget) {
@@ -2069,6 +2076,12 @@
             const rating = parseInt(star.getAttribute('data-rating'));
             const starsContainer = star.parentElement;
             const recipeId = starsContainer.getAttribute('data-recipe-id');
+            
+            // Validate recipeId is a positive integer
+            if (!recipeId || !/^\d+$/.test(recipeId)) {
+                console.error('Invalid recipe ID');
+                return;
+            }
             
             selectedRatingValue = rating;
             
@@ -2123,6 +2136,12 @@
         async function submitRating(button) {
             const recipeId = button.getAttribute('data-recipe-id');
             
+            // Validate recipeId is a positive integer
+            if (!recipeId || !/^\d+$/.test(recipeId)) {
+                console.error('Invalid recipe ID');
+                return;
+            }
+            
             if (!selectedRatingValue || !recipeId) {
                 console.error('No rating selected or recipe ID missing');
                 return;
@@ -2132,7 +2151,7 @@
             button.textContent = 'Submitting...';
             
             try {
-                const response = await fetch('/api/recipes/' + recipeId + '/rate', {
+                const response = await fetch('/api/recipes/' + encodeURIComponent(recipeId) + '/rate', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
