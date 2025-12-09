@@ -30,7 +30,7 @@ public class RecipeService {
     }
     
     public Optional<Recipe> getRecipeById(Long id) {
-        return recipeRepository.findById(id);
+        return recipeRepository.findById(java.util.Objects.requireNonNull(id, "id must not be null"));
     }
     
     public List<Recipe> getRecipesByDifficulty(String difficultyLevel) {
@@ -97,11 +97,11 @@ public class RecipeService {
     }
     
     public Recipe saveRecipe(Recipe recipe) {
-        return recipeRepository.save(recipe);
+        return recipeRepository.save(java.util.Objects.requireNonNull(recipe, "recipe must not be null"));
     }
     
     public void deleteRecipe(Long id) {
-        recipeRepository.deleteById(id);
+        recipeRepository.deleteById(java.util.Objects.requireNonNull(id, "id must not be null"));
     }
     
     /**

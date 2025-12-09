@@ -1,8 +1,6 @@
 package com.coveros.training.flavorhub.service;
 
-import com.coveros.training.flavorhub.model.Ingredient;
 import com.coveros.training.flavorhub.model.UserPantry;
-import com.coveros.training.flavorhub.repository.IngredientRepository;
 import com.coveros.training.flavorhub.repository.UserPantryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,33 +18,32 @@ import java.util.Optional;
 public class UserPantryService {
     
     private final UserPantryRepository userPantryRepository;
-    private final IngredientRepository ingredientRepository;
     
     public List<UserPantry> getUserPantry(Long userId) {
         return userPantryRepository.findByUserId(userId);
     }
     
     public Optional<UserPantry> getPantryItemById(Long id) {
-        return userPantryRepository.findById(id);
+        return userPantryRepository.findById(java.util.Objects.requireNonNull(id, "id must not be null"));
     }
     
     public UserPantry addPantryItem(UserPantry pantryItem) {
-        return userPantryRepository.save(pantryItem);
+        return userPantryRepository.save(java.util.Objects.requireNonNull(pantryItem, "pantryItem must not be null"));
     }
     
     public UserPantry updatePantryItem(Long id, UserPantry updatedPantryItem) {
-        return userPantryRepository.findById(id)
+        return userPantryRepository.findById(java.util.Objects.requireNonNull(id, "id must not be null"))
             .map(existing -> {
                 existing.setQuantity(updatedPantryItem.getQuantity());
                 existing.setUnit(updatedPantryItem.getUnit());
                 existing.setNotes(updatedPantryItem.getNotes());
-                return userPantryRepository.save(existing);
+                return userPantryRepository.save(java.util.Objects.requireNonNull(existing, "existing pantry item must not be null"));
             })
             .orElseThrow(() -> new RuntimeException("Pantry item not found with id: " + id));
     }
     
     public void deletePantryItem(Long id) {
-        userPantryRepository.deleteById(id);
+        userPantryRepository.deleteById(java.util.Objects.requireNonNull(id, "id must not be null"));
     }
     
     public void clearUserPantry(Long userId) {

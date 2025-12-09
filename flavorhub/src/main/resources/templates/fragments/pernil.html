@@ -1,0 +1,137 @@
+<!--
+  Thymeleaf fragment: Recipe Card (pernil)
+  Purpose: Display a recipe with image, title, and metadata
+  Accepts: recipe (object)
+  Usage: th:replace="fragments/pernil :: recipeCard(${recipe})"
+-->
+<div th:fragment="recipeCard (recipe)" class="recipe-card" aria-label="Recipe card">
+    <style>
+        .recipe-card {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 1rem;
+            align-items: start;
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #ffffff;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+            transition: transform 180ms ease, box-shadow 180ms ease;
+        }
+        .recipe-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+        .recipe-figure {
+            margin: 0;
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f8fafc;
+        }
+        .recipe-figure img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .recipe-content {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            gap: 0.5rem;
+        }
+        .recipe-header {
+            display: flex;
+            align-items: start;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+        .recipe-title {
+            font-size: 1.25rem;
+            line-height: 1.4;
+            margin: 0;
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .recipe-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1rem;
+            color: #475569;
+            font-size: 0.9rem;
+        }
+        .badge {
+            padding: 0.2rem 0.5rem;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #3730a3;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .difficulty.Easy { background: #dcfce7; color: #166534; }
+        .difficulty.Medium { background: #fde68a; color: #92400e; }
+        .difficulty.Hard { background: #fecaca; color: #7f1d1d; }
+        .recipe-description {
+            margin: 0.25rem 0 0.5rem 0;
+            color: #334155;
+        }
+        .recipe-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .btn-link {
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            color: #0f172a;
+            padding: 0.4rem 0.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 150ms ease, border-color 150ms ease;
+        }
+        .btn-link:hover { background: #f8fafc; border-color: #cbd5e1; }
+        @media (max-width: 640px) {
+            .recipe-card { grid-template-columns: 1fr; }
+            .recipe-figure { height: 180px; }
+        }
+    </style>
+
+    <figure class="recipe-figure" aria-label="Recipe image">
+        <img th:src="${recipe.imageUrl}" th:alt="${'Image of ' + recipe.name}" alt="Recipe image" />
+        <figcaption class="visually-hidden" th:text="${recipe.name}">Recipe name</figcaption>
+    </figure>
+
+    <article class="recipe-content" aria-label="Recipe details">
+        <header class="recipe-header">
+            <h3 class="recipe-title" th:text="${recipe.name}">Pernil</h3>
+            <span class="badge difficulty" th:classappend="${recipe.difficulty}" th:text="${recipe.difficulty}">Medium</span>
+        </header>
+
+        <p class="recipe-description" th:text="${recipe.description}" aria-label="Recipe description">
+            Slow-roasted pork shoulder, perfect for parties.
+        </p>
+
+        <div class="recipe-meta" aria-label="Recipe metadata">
+            <span aria-label="Prep time"><strong>Prep:</strong> <span th:text="${recipe.prepTime}">20</span> mins</span>
+            <span aria-label="Cook time"><strong>Cook:</strong> <span th:text="${recipe.cookTime}">180</span> mins</span>
+            <span aria-label="Servings"><strong>Serves:</strong> <span th:text="${recipe.servings}">8</span></span>
+            <span aria-label="Cuisine" th:if="${recipe.cuisine}"><strong>Cuisine:</strong> <span th:text="${recipe.cuisine}">Puerto Rican</span></span>
+        </div>
+
+        <footer class="recipe-footer">
+            <div class="actions" aria-label="Recipe actions">
+                <a class="btn-link" th:href="@{/recipes}" aria-label="View all recipes">View All</a>
+                <a class="btn-link" th:href="@{'/recipes/' + ${recipe.id}}" aria-label="View recipe details">Details</a>
+            </div>
+            <div class="tags" aria-label="Recipe tags" th:if="${recipe.cuisine}">
+                <span class="badge" th:text="${recipe.cuisine}">Party</span>
+            </div>
+        </footer>
+    </article>
+</div>

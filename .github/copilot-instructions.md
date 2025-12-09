@@ -13,7 +13,7 @@ This is a Spring Boot application for managing recipes and pantry ingredients, u
 - Use meaningful, descriptive names
 - Keep methods focused and concise (single responsibility)
 - Prefer composition over inheritance
-- Use Java 21 features where appropriate
+- Use Java 17+ features where appropriate
 
 ### Frontend Guidelines (HTML/CSS/JavaScript)
 - Use Thymeleaf template engine for server-side rendering

@@ -24,7 +24,7 @@ public class IngredientService {
     }
     
     public Optional<Ingredient> getIngredientById(Long id) {
-        return ingredientRepository.findById(id);
+        return ingredientRepository.findById(java.util.Objects.requireNonNull(id, "id must not be null"));
     }
     
     public Optional<Ingredient> getIngredientByName(String name) {
@@ -40,10 +40,10 @@ public class IngredientService {
     }
     
     public Ingredient saveIngredient(Ingredient ingredient) {
-        return ingredientRepository.save(ingredient);
+        return ingredientRepository.save(java.util.Objects.requireNonNull(ingredient, "ingredient must not be null"));
     }
     
     public void deleteIngredient(Long id) {
-        ingredientRepository.deleteById(id);
+        ingredientRepository.deleteById(java.util.Objects.requireNonNull(id, "id must not be null"));
     }
 }
