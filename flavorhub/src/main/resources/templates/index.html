@@ -777,6 +777,119 @@
             text-align: center;
         }
 
+        .rating-display {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            font-size: 0.9em;
+        }
+
+        .stars {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .star {
+            font-size: 1.1em;
+            color: #ddd;
+        }
+
+        .star.filled {
+            color: #667eea;
+        }
+
+        .rating-text {
+            color: #4a4f5c;
+            font-size: 0.9em;
+        }
+
+        .rating-widget {
+            margin-top: 12px;
+            padding: 16px;
+            background: rgba(102, 126, 234, 0.06);
+            border-radius: 10px;
+            border: 1px solid rgba(102, 126, 234, 0.12);
+        }
+
+        .rating-widget.hidden {
+            display: none;
+        }
+
+        .rating-widget h4 {
+            font-size: 0.95em;
+            color: #2d2f36;
+            margin-bottom: 10px;
+        }
+
+        .interactive-stars {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .interactive-star {
+            font-size: 1.8em;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .interactive-star:hover,
+        .interactive-star.hover {
+            color: #667eea;
+            transform: scale(1.15);
+        }
+
+        .interactive-star.selected {
+            color: #667eea;
+        }
+
+        .rate-button {
+            display: inline-block;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 999px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .rate-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .rate-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .show-rating-btn {
+            display: inline-block;
+            padding: 6px 14px;
+            background: rgba(102, 126, 234, 0.12);
+            color: #667eea;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 999px;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+        }
+
+        .show-rating-btn:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
         @keyframes spin {
             to {
                 transform: rotate(360deg);
@@ -1056,6 +1169,21 @@
                 <div class="search-results">
                     <article class="recipe-card fade-in-up" th:each="recipe : ${recipes}">
                         <h3 th:text="${recipe.name}">Recipe Name</h3>
+                        <div class="rating-display">
+                            <div class="stars">
+                                <span class="star" th:classappend="${recipe.averageRating >= 0.5 ? 'filled' : ''}">★</span>
+                                <span class="star" th:classappend="${recipe.averageRating >= 1.5 ? 'filled' : ''}">★</span>
+                                <span class="star" th:classappend="${recipe.averageRating >= 2.5 ? 'filled' : ''}">★</span>
+                                <span class="star" th:classappend="${recipe.averageRating >= 3.5 ? 'filled' : ''}">★</span>
+                                <span class="star" th:classappend="${recipe.averageRating >= 4.5 ? 'filled' : ''}">★</span>
+                            </div>
+                            <span class="rating-text" 
+                                  th:text="${recipe.averageRating != null && recipe.ratingCount != null ? 
+                                           (#numbers.formatDecimal(recipe.averageRating, 1, 1) + ' stars (' + recipe.ratingCount + ' ratings)') : 
+                                           'No ratings yet'}">
+                                0.0 stars (0 ratings)
+                            </span>
+                        </div>
                         <div class="recipe-meta">
                             <span>
                                 <strong>Difficulty:</strong>
@@ -1073,6 +1201,27 @@
                                       th:classappend=" ' ' + ${#strings.toLowerCase(recipe.cuisineType)}"
                                       th:text="${recipe.cuisineType != null ? recipe.cuisineType : 'Cuisine'}">Italian</span>
                             </span>
+                        </div>
+                        <button class="show-rating-btn" 
+                                th:attr="data-recipe-id=${recipe.id}"
+                                onclick="showRatingWidget(this)">
+                            ⭐ Rate this recipe
+                        </button>
+                        <div class="rating-widget hidden" th:id="'rating-widget-' + ${recipe.id}">
+                            <h4>Rate this recipe:</h4>
+                            <div class="interactive-stars" th:attr="data-recipe-id=${recipe.id}">
+                                <span class="interactive-star" data-rating="1" onclick="selectRating(this)">★</span>
+                                <span class="interactive-star" data-rating="2" onclick="selectRating(this)">★</span>
+                                <span class="interactive-star" data-rating="3" onclick="selectRating(this)">★</span>
+                                <span class="interactive-star" data-rating="4" onclick="selectRating(this)">★</span>
+                                <span class="interactive-star" data-rating="5" onclick="selectRating(this)">★</span>
+                            </div>
+                            <button class="rate-button" 
+                                    th:attr="data-recipe-id=${recipe.id}"
+                                    onclick="submitRating(this)" 
+                                    disabled>
+                                Submit Rating
+                            </button>
                         </div>
                     </article>
                 </div>
@@ -1865,6 +2014,210 @@
                 });
             }
         })();
+
+        // Rating widget functionality
+        let selectedRatingValue = null;
+        let currentRecipeId = null;
+
+        /**
+         * Show the rating widget for a recipe
+         */
+        function showRatingWidget(button) {
+            const recipeId = button.getAttribute('data-recipe-id');
+            
+            // Validate recipeId is a positive integer
+            if (!recipeId || !/^\d+$/.test(recipeId)) {
+                console.error('Invalid recipe ID');
+                return;
+            }
+            
+            const widget = document.getElementById('rating-widget-' + recipeId);
+            
+            if (widget) {
+                const isHidden = widget.classList.contains('hidden');
+                
+                // Hide all other widgets
+                document.querySelectorAll('.rating-widget').forEach(w => {
+                    if (w.id !== 'rating-widget-' + recipeId) {
+                        w.classList.add('hidden');
+                    }
+                });
+                
+                // Toggle current widget
+                if (isHidden) {
+                    widget.classList.remove('hidden');
+                    currentRecipeId = recipeId;
+                    button.textContent = '✕ Close rating';
+                } else {
+                    widget.classList.add('hidden');
+                    currentRecipeId = null;
+                    selectedRatingValue = null;
+                    button.textContent = '⭐ Rate this recipe';
+                    
+                    // Reset stars
+                    const stars = widget.querySelectorAll('.interactive-star');
+                    stars.forEach(star => {
+                        star.classList.remove('selected', 'hover');
+                    });
+                    
+                    // Disable submit button
+                    const submitBtn = widget.querySelector('.rate-button');
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                    }
+                }
+            }
+        }
+
+        /**
+         * Select a rating value
+         */
+        function selectRating(star) {
+            const rating = parseInt(star.getAttribute('data-rating'));
+            const starsContainer = star.parentElement;
+            const recipeId = starsContainer.getAttribute('data-recipe-id');
+            
+            // Validate recipeId is a positive integer
+            if (!recipeId || !/^\d+$/.test(recipeId)) {
+                console.error('Invalid recipe ID');
+                return;
+            }
+            
+            selectedRatingValue = rating;
+            
+            // Update star display
+            const stars = starsContainer.querySelectorAll('.interactive-star');
+            stars.forEach((s, index) => {
+                if (index < rating) {
+                    s.classList.add('selected');
+                } else {
+                    s.classList.remove('selected');
+                }
+            });
+            
+            // Enable submit button
+            const widget = document.getElementById('rating-widget-' + recipeId);
+            if (widget) {
+                const submitBtn = widget.querySelector('.rate-button');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                }
+            }
+        }
+
+        /**
+         * Add hover effect to rating stars
+         */
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.interactive-stars').forEach(container => {
+                const stars = container.querySelectorAll('.interactive-star');
+                
+                stars.forEach((star, index) => {
+                    star.addEventListener('mouseenter', function() {
+                        stars.forEach((s, i) => {
+                            if (i <= index) {
+                                s.classList.add('hover');
+                            } else {
+                                s.classList.remove('hover');
+                            }
+                        });
+                    });
+                });
+                
+                container.addEventListener('mouseleave', function() {
+                    stars.forEach(s => s.classList.remove('hover'));
+                });
+            });
+        });
+
+        /**
+         * Submit rating to the server
+         */
+        async function submitRating(button) {
+            const recipeId = button.getAttribute('data-recipe-id');
+            
+            // Validate recipeId is a positive integer
+            if (!recipeId || !/^\d+$/.test(recipeId)) {
+                console.error('Invalid recipe ID');
+                return;
+            }
+            
+            if (!selectedRatingValue || !recipeId) {
+                console.error('No rating selected or recipe ID missing');
+                return;
+            }
+            
+            button.disabled = true;
+            button.textContent = 'Submitting...';
+            
+            try {
+                const response = await fetch('/api/recipes/' + encodeURIComponent(recipeId) + '/rate', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ rating: selectedRatingValue })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to submit rating');
+                }
+                
+                const updatedRecipe = await response.json();
+                
+                // Update the rating display
+                updateRatingDisplay(recipeId, updatedRecipe.averageRating, updatedRecipe.ratingCount);
+                
+                // Hide the widget and reset
+                const showButton = document.querySelector('.show-rating-btn[data-recipe-id="' + recipeId + '"]');
+                if (showButton) {
+                    showRatingWidget(showButton);
+                }
+                
+                // Show success message
+                button.textContent = '✓ Rating submitted!';
+                setTimeout(() => {
+                    button.textContent = 'Submit Rating';
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Error submitting rating:', error);
+                button.textContent = '✗ Failed to submit';
+                button.disabled = false;
+                
+                setTimeout(() => {
+                    button.textContent = 'Submit Rating';
+                }, 2000);
+            }
+        }
+
+        /**
+         * Update the rating display after submission
+         */
+        function updateRatingDisplay(recipeId, averageRating, ratingCount) {
+            const card = document.querySelector('.recipe-card .show-rating-btn[data-recipe-id="' + recipeId + '"]')?.closest('.recipe-card');
+            if (!card) return;
+            
+            const ratingDisplay = card.querySelector('.rating-display');
+            if (!ratingDisplay) return;
+            
+            // Update stars
+            const stars = ratingDisplay.querySelectorAll('.star');
+            stars.forEach((star, index) => {
+                if (averageRating >= (index + 0.5)) {
+                    star.classList.add('filled');
+                } else {
+                    star.classList.remove('filled');
+                }
+            });
+            
+            // Update text
+            const ratingText = ratingDisplay.querySelector('.rating-text');
+            if (ratingText) {
+                const formattedRating = averageRating.toFixed(1);
+                ratingText.textContent = formattedRating + ' stars (' + ratingCount + ' rating' + (ratingCount === 1 ? '' : 's') + ')';
+            }
+        }
     </script>
 </body>
 
