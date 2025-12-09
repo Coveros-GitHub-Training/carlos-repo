@@ -337,6 +337,17 @@
             gap: 24px;
         }
 
+        .featured-section {
+            background: white;
+            border-radius: 16px;
+            padding: 36px;
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.14);
+            border: 1px solid rgba(102, 126, 234, 0.12);
+        }
+
+        .featured-section h2 { color:#2d2f36; font-size:1.85em; margin-bottom:8px; }
+        .featured-section p { color:#4a4f5c; margin-bottom:24px; }
+
         .recipe-card {
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(244, 247, 255, 0.98));
             border: 1px solid rgba(102, 126, 234, 0.14);
@@ -1038,6 +1049,34 @@
                 <h2>Welcome to the FlavorHub Workshop!</h2>
                 <p>Learn to use GitHub Copilot by building features for this recipe recommendation application</p>
             </div>
+
+            <section class="featured-section" aria-labelledby="featured-recipes-heading">
+                <h2 id="featured-recipes-heading">Featured Recipes</h2>
+                <p>Browse a selection of recipes from different cuisines.</p>
+                <div class="search-results">
+                    <article class="recipe-card fade-in-up" th:each="recipe : ${recipes}">
+                        <h3 th:text="${recipe.name}">Recipe Name</h3>
+                        <div class="recipe-meta">
+                            <span>
+                                <strong>Difficulty:</strong>
+                                <span class="badge difficulty-badge"
+                                      th:classappend=" ' difficulty-' + ${#strings.toLowerCase(recipe.difficultyLevel)}"
+                                      th:text="${recipe.difficultyLevel != null ? recipe.difficultyLevel : 'N/A'}">Easy</span>
+                            </span>
+                            <span>
+                                <strong>Prep:</strong>
+                                <span th:text="${recipe.prepTime != null ? recipe.prepTime + ' min' : '—'}">15 min</span>
+                            </span>
+                            <span>
+                                <strong>Cuisine:</strong>
+                                <span class="badge badge-cuisine"
+                                      th:classappend=" ' ' + ${#strings.toLowerCase(recipe.cuisineType)}"
+                                      th:text="${recipe.cuisineType != null ? recipe.cuisineType : 'Cuisine'}">Italian</span>
+                            </span>
+                        </div>
+                    </article>
+                </div>
+            </section>
 
             <section class="daily-section" aria-labelledby="daily-recipe-heading">
                 <h2 id="daily-recipe-heading">Recipe of the Day</h2>

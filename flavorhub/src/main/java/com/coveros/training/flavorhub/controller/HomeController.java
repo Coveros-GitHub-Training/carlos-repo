@@ -1,16 +1,23 @@
 package com.coveros.training.flavorhub.controller;
 
+import com.coveros.training.flavorhub.service.RecipeService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * Controller for serving the main web pages
  */
 @Controller
+@RequiredArgsConstructor
 public class HomeController {
     
+    private final RecipeService recipeService;
+    
     @GetMapping("/")
-    public String home() {
+    public String home(Model model) {
+        model.addAttribute("recipes", recipeService.getAllRecipes());
         return "index";
     }
     
