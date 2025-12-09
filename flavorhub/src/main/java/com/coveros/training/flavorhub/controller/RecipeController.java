@@ -3,6 +3,8 @@ package com.coveros.training.flavorhub.controller;
 import com.coveros.training.flavorhub.model.Recipe;
 import com.coveros.training.flavorhub.service.RecipeService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,7 @@ import java.util.List;
 public class RecipeController {
     
     private final RecipeService recipeService;
+    private static final Logger log = LoggerFactory.getLogger(RecipeController.class);
     
     @GetMapping
     public ResponseEntity<List<Recipe>> getAllRecipes() {
@@ -39,6 +42,21 @@ public class RecipeController {
     @GetMapping("/search")
     public ResponseEntity<List<Recipe>> searchRecipes(@RequestParam String query) {
         return ResponseEntity.ok(recipeService.searchRecipes(query));
+    }
+
+    /**
+     * Provide the recipe of the day using a deterministic selection algorithm.
+     *
+     * @return response containing the recipe of the day or 404 when no recipes exist
+     */
+    @GetMapping("/daily")
+    public ResponseEntity<Recipe> getRecipeOfTheDay() {
+        return recipeService.getRecipeOfTheDay()
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> {
+                    log.warn("Recipe of the day requested but no recipes are available");
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                });
     }
     
     /**

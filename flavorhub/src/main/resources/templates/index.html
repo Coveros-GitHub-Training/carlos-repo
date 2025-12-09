@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +11,7 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
@@ -19,101 +20,849 @@
             min-height: 100vh;
             padding: 20px;
         }
-        
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             background: white;
             border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
             overflow: hidden;
         }
-        
+
+        .content {
+            padding: 40px;
+            display: grid;
+            gap: 40px;
+        }
+
         header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 40px;
+            padding: 48px 40px;
             text-align: center;
         }
-        
-        header h1 {
-            font-size: 2.5em;
+
+        .daily-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.12), rgba(118, 75, 162, 0.12));
+            border: 1px solid rgba(102, 126, 234, 0.16);
+            border-radius: 16px;
+            padding: 36px;
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.18);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .daily-section::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.45), transparent 58%);
+            pointer-events: none;
+        }
+
+        .daily-section h2 {
+            color: #2d2f36;
+            font-size: 1.9em;
             margin-bottom: 10px;
         }
-        
-        header p {
-            font-size: 1.2em;
-            opacity: 0.9;
+
+        .daily-section p.section-intro {
+            color: #4a4f5c;
+            margin-bottom: 24px;
+            max-width: 540px;
         }
-        
-        .content {
-            padding: 40px;
+
+        .daily-message {
+            color: #4a4f5c;
+            font-weight: 500;
+            margin-bottom: 18px;
         }
-        
-        .welcome {
+
+        .daily-spinner {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            margin-bottom: 18px;
+        }
+
+        .daily-spinner[hidden] {
+            display: none !important;
+        }
+
+        .spinner-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 3px solid rgba(102, 126, 234, 0.25);
+            border-top-color: #667eea;
+            animation: spin 0.9s linear infinite;
+        }
+
+        .daily-card {
+            background: white;
+            border-radius: 14px;
+            padding: 28px;
+            box-shadow: 0 16px 36px rgba(118, 75, 162, 0.18);
+            border: 1px solid rgba(102, 126, 234, 0.12);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .daily-card:hover,
+        .daily-card:focus-within {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 42px rgba(102, 126, 234, 0.24);
+        }
+
+        .daily-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 12px;
+            color: #2d2f36;
+        }
+
+        .daily-card p {
+            color: #4a4f5c;
+            margin-bottom: 18px;
+        }
+
+        .daily-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 0.85em;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            background: rgba(102, 126, 234, 0.18);
+            color: #3b3f4c;
+        }
+
+        .badge-cuisine {
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(102, 126, 234, 0.22);
+        }
+
+        .badge-difficulty {
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(118, 75, 162, 0.22);
+        }
+
+        .difficulty-easy {
+            background: rgba(56, 161, 105, 0.16);
+            color: #276749;
+            border-color: rgba(56, 161, 105, 0.32);
+        }
+
+        .difficulty-medium {
+            background: rgba(237, 137, 54, 0.16);
+            color: #b7791f;
+            border-color: rgba(237, 137, 54, 0.32);
+        }
+
+        .difficulty-hard {
+            background: rgba(229, 62, 62, 0.16);
+            color: #c53030;
+            border-color: rgba(229, 62, 62, 0.32);
+        }
+
+        .daily-times {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+            color: #4a4f5c;
+            font-weight: 500;
+        }
+
+        .daily-times span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .daily-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 22px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 12px 28px rgba(102, 126, 234, 0.3);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .daily-button:hover,
+        .daily-button:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 32px rgba(102, 126, 234, 0.38);
+        }
+
+        .daily-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-top: 22px;
+        }
+
+        .daily-random-button {
+            border: none;
+            border-radius: 999px;
+            padding: 12px 20px;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.85);
+            color: #4a4f5c;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(118, 75, 162, 0.18);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+        }
+
+        .daily-random-button:hover,
+        .daily-random-button:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(118, 75, 162, 0.22);
+            background: rgba(255, 255, 255, 0.95);
+            color: #2d2f36;
+        }
+
+        .daily-random-button.is-disabled,
+        .daily-random-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .search-section {
+            background: white;
+            border-radius: 16px;
+            padding: 36px;
+            box-shadow: 0 16px 36px rgba(102, 126, 234, 0.16);
+            border: 1px solid rgba(102, 126, 234, 0.12);
+        }
+
+        .search-section h2 {
+            color: #2d2f36;
+            font-size: 1.85em;
+            margin-bottom: 8px;
+        }
+
+        .search-section p {
+            color: #4a4f5c;
+            margin-bottom: 24px;
+        }
+
+        .search-control {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 22px;
+            border-radius: 12px;
+            border: 1px solid rgba(102, 126, 234, 0.32);
+            font-size: 1.05em;
+            color: #2d2f36;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.12);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 18px 32px rgba(102, 126, 234, 0.24);
+        }
+
+        .search-suggestions {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid rgba(102, 126, 234, 0.18);
+            box-shadow: 0 16px 32px rgba(102, 126, 234, 0.16);
+            list-style: none;
+            padding: 8px 0;
+            max-height: 260px;
+            overflow-y: auto;
+            z-index: 40;
+        }
+
+        .search-suggestions[hidden] {
+            display: none !important;
+        }
+
+        .search-suggestions li {
+            padding: 10px 18px;
+            cursor: pointer;
+            color: #2d2f36;
+            transition: background 0.2s ease;
+        }
+
+        .search-suggestions li:hover,
+        .search-suggestions li:focus {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .search-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+        }
+
+        .recipe-card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(244, 247, 255, 0.98));
+            border: 1px solid rgba(102, 126, 234, 0.14);
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 12px 28px rgba(102, 126, 234, 0.14);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .recipe-card:hover,
+        .recipe-card:focus-within {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 36px rgba(102, 126, 234, 0.2);
+        }
+
+        .recipe-card h3 {
+            color: #2d2f36;
+            font-size: 1.25em;
+            margin-bottom: 12px;
+        }
+
+        .recipe-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            color: #4a4f5c;
+            font-size: 0.95em;
+        }
+
+        .recipe-meta .badge {
+            margin-left: auto;
+        }
+
+        .search-empty {
+            margin-top: 20px;
+            padding: 16px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 12px;
+            color: #4a4f5c;
             text-align: center;
-            margin-bottom: 40px;
+            font-weight: 500;
         }
-        
-        .welcome h2 {
+
+        .fade-in-up {
+            animation: fadeInUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeScaleIn {
+            from {
+                opacity: 0;
+                transform: translateY(14px) scale(0.92);
+            }
+
+            55% {
+                opacity: 0.92;
+                transform: translateY(0) scale(1.015);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .fade-scale-in {
+            animation: fadeScaleIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .drawer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(26, 32, 44, 0.55);
+            display: flex;
+            justify-content: flex-end;
+            align-items: stretch;
+            z-index: 1200;
+        }
+
+        .drawer-overlay[hidden] {
+            display: none !important;
+        }
+
+        .drawer-panel {
+            width: min(460px, 100%);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 249, 252, 0.98));
+            box-shadow: -24px 0 48px rgba(76, 87, 125, 0.2);
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 36px 32px;
+        }
+
+        .drawer-panel.is-open {
+            transform: translateX(0);
+        }
+
+        .drawer-close {
+            align-self: flex-end;
+            border: none;
+            background: rgba(118, 75, 162, 0.08);
+            color: #4a4f5c;
+            font-size: 1.2em;
+            border-radius: 999px;
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .drawer-close:hover,
+        .drawer-close:focus-visible {
+            background: rgba(118, 75, 162, 0.18);
+            transform: translateY(-1px);
+        }
+
+        .drawer-header {
+            margin-bottom: 18px;
+        }
+
+        .drawer-header h3 {
+            font-size: 1.55em;
+            color: #2d2f36;
+            margin-bottom: 8px;
+        }
+
+        .drawer-description {
+            color: #4a4f5c;
+            margin-bottom: 18px;
+            line-height: 1.6;
+        }
+
+        .drawer-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .drawer-times {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            color: #4a4f5c;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        .drawer-section {
+            margin-bottom: 28px;
+        }
+
+        .drawer-section h4 {
+            font-size: 1.05em;
             color: #667eea;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
-        
+
+        .drawer-ingredients {
+            list-style: none;
+            display: grid;
+            gap: 10px;
+            padding-left: 0;
+        }
+
+        .drawer-ingredients li {
+            padding: 12px 14px;
+            background: rgba(102, 126, 234, 0.08);
+            border-radius: 10px;
+            color: #2d2f36;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .drawer-ingredients li.drawer-empty {
+            justify-content: center;
+        }
+
+        .drawer-ingredients span.notes {
+            color: #667eea;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+
+        .drawer-instructions {
+            counter-reset: instruction-step;
+            list-style: none;
+            display: grid;
+            gap: 14px;
+            padding-left: 0;
+        }
+
+        .drawer-instructions li {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 18px 16px 58px;
+            position: relative;
+            box-shadow: 0 10px 24px rgba(118, 75, 162, 0.12);
+            color: #2d2f36;
+            line-height: 1.55;
+        }
+
+        .drawer-instructions li::before {
+            counter-increment: instruction-step;
+            content: counter(instruction-step);
+            position: absolute;
+            left: 18px;
+            top: 18px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            box-shadow: 0 8px 18px rgba(102, 126, 234, 0.28);
+        }
+
+        .drawer-instructions li.drawer-empty::before {
+            display: none;
+        }
+
+        .drawer-instructions li.drawer-empty {
+            padding-left: 18px;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .drawer-empty {
+            padding: 14px 16px;
+            background: rgba(102, 126, 234, 0.08);
+            border-radius: 10px;
+            color: #4a4f5c;
+            font-style: italic;
+            text-align: center;
+        }
+
+        .fade-scale-in {
+            animation: fadeScaleIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .drawer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(26, 32, 44, 0.55);
+            display: flex;
+            justify-content: flex-end;
+            align-items: stretch;
+            z-index: 1200;
+        }
+
+        .drawer-overlay[hidden] {
+            display: none !important;
+        }
+
+        .drawer-panel {
+            width: min(460px, 100%);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 249, 252, 0.98));
+            box-shadow: -24px 0 48px rgba(76, 87, 125, 0.2);
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 36px 32px;
+        }
+
+        .drawer-panel.is-open {
+            transform: translateX(0);
+        }
+
+        .drawer-close {
+            align-self: flex-end;
+            border: none;
+            background: rgba(118, 75, 162, 0.08);
+            color: #4a4f5c;
+            font-size: 1.2em;
+            border-radius: 999px;
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .drawer-close:hover,
+        .drawer-close:focus-visible {
+            background: rgba(118, 75, 162, 0.18);
+            transform: translateY(-1px);
+        }
+
+        .drawer-header {
+            margin-bottom: 18px;
+        }
+
+        .drawer-header h3 {
+            font-size: 1.55em;
+            color: #2d2f36;
+            margin-bottom: 8px;
+        }
+
+        .drawer-description {
+            color: #4a4f5c;
+            margin-bottom: 18px;
+            line-height: 1.6;
+        }
+
+        .drawer-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .drawer-times {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            color: #4a4f5c;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        .drawer-section {
+            margin-bottom: 28px;
+        }
+
+        .drawer-section h4 {
+            font-size: 1.05em;
+            color: #667eea;
+            margin-bottom: 12px;
+        }
+
+        .drawer-ingredients {
+            list-style: none;
+            display: grid;
+            gap: 10px;
+            padding-left: 0;
+        }
+
+        .drawer-ingredients li {
+            padding: 12px 14px;
+            background: rgba(102, 126, 234, 0.08);
+            border-radius: 10px;
+            color: #2d2f36;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .drawer-ingredients span.notes {
+            color: #667eea;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+
+        .drawer-instructions {
+            counter-reset: instruction-step;
+            list-style: none;
+            display: grid;
+            gap: 14px;
+            padding-left: 0;
+        }
+
+        .drawer-instructions li {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 18px 16px 58px;
+            position: relative;
+            box-shadow: 0 10px 24px rgba(118, 75, 162, 0.12);
+            color: #2d2f36;
+            line-height: 1.55;
+        }
+
+        .drawer-instructions li::before {
+            counter-increment: instruction-step;
+            content: counter(instruction-step);
+            position: absolute;
+            left: 18px;
+            top: 18px;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            box-shadow: 0 8px 18px rgba(102, 126, 234, 0.28);
+        }
+
+        .drawer-instructions li.drawer-empty::before {
+            display: none;
+        }
+
+        .drawer-empty {
+            padding: 14px 16px;
+            background: rgba(102, 126, 234, 0.08);
+            border-radius: 10px;
+            color: #4a4f5c;
+            font-style: italic;
+            text-align: center;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 30px;
             margin-top: 30px;
         }
-        
+
         .feature-card {
             background: #f8f9fa;
             padding: 25px;
-            border-radius: 8px;
+            border-radius: 12px;
             border-left: 4px solid #667eea;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.08);
+            transition:
+                transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+                background 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
         }
-        
+
+        .feature-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.12), rgba(118, 75, 162, 0.12));
+            opacity: 0;
+            transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: -1;
+        }
+
+        .feature-card:hover,
+        .feature-card:focus-visible {
+            transform: translateY(-6px);
+            box-shadow: 0 14px 32px rgba(102, 126, 234, 0.22);
+            border-color: #764ba2;
+            background: #f4f6ff;
+        }
+
+        .feature-card:hover::after,
+        .feature-card:focus-visible::after {
+            opacity: 1;
+        }
+
         .feature-card h3 {
-            color: #333;
-            margin-bottom: 10px;
+            color: #2d2f36;
+            margin-bottom: 12px;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            transition: color 0.2s ease;
         }
-        
+
         .feature-card p {
-            color: #666;
+            color: #555b6d;
             font-size: 0.95em;
+            transition: color 0.2s ease;
         }
-        
+
         .api-section {
             margin-top: 40px;
             padding: 30px;
             background: #f8f9fa;
             border-radius: 8px;
         }
-        
+
         .api-section h2 {
             color: #667eea;
             margin-bottom: 20px;
         }
-        
+
         .api-endpoints {
             display: grid;
             gap: 15px;
         }
-        
+
         .endpoint {
             background: white;
             padding: 15px;
             border-radius: 5px;
             border: 1px solid #ddd;
         }
-        
+
         .endpoint code {
             color: #667eea;
             font-family: 'Courier New', monospace;
             font-weight: bold;
         }
-        
+
         .endpoint .method {
             display: inline-block;
             padding: 3px 8px;
@@ -122,12 +871,27 @@
             font-weight: bold;
             margin-right: 10px;
         }
-        
-        .method.get { background: #28a745; color: white; }
-        .method.post { background: #007bff; color: white; }
-        .method.put { background: #ffc107; color: #333; }
-        .method.delete { background: #dc3545; color: white; }
-        
+
+        .method.get {
+            background: #28a745;
+            color: white;
+        }
+
+        .method.post {
+            background: #007bff;
+            color: white;
+        }
+
+        .method.put {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .method.delete {
+            background: #dc3545;
+            color: white;
+        }
+
         .workshop-info {
             background: #fff3cd;
             border-left: 4px solid #ffc107;
@@ -135,12 +899,12 @@
             margin-top: 30px;
             border-radius: 5px;
         }
-        
+
         .workshop-info h3 {
             color: #856404;
             margin-bottom: 10px;
         }
-        
+
         footer {
             text-align: center;
             padding: 20px;
@@ -148,50 +912,207 @@
             color: #666;
             font-size: 0.9em;
         }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+
+            .daily-section {
+                padding: 25px;
+                margin: 30px 0;
+            }
+
+            .daily-card {
+                padding: 24px;
+                font-size: 0.97em;
+            }
+
+            .daily-button {
+                width: 100%;
+                text-align: center;
+            }
+
+            .daily-times {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .daily-actions {
+                margin-top: 20px;
+            }
+
+            .daily-random-button {
+                width: 100%;
+            }
+
+            .drawer-panel {
+                width: 100%;
+                padding: 28px 24px 40px;
+            }
+
+
+            .search-section {
+                padding: 25px;
+                margin: 30px 0;
+            }
+
+            .search-input {
+                font-size: 1em;
+                padding: 14px 18px;
+            }
+
+            .search-results {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-card {
+                padding: 20px;
+            }
+
+            .api-section {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .daily-section {
+                padding: 22px;
+            }
+
+            .daily-section h2 {
+                font-size: 1.4em;
+            }
+
+            .daily-section p.section-intro {
+                font-size: 0.95em;
+                line-height: 1.5;
+            }
+
+            .daily-card {
+                padding: 20px;
+                font-size: 1em;
+            }
+
+            .daily-card h3 {
+                font-size: 1.25em;
+            }
+
+            .daily-times {
+                font-size: 0.95em;
+            }
+
+            .daily-random-button {
+                padding: 12px 20px;
+            }
+
+            .drawer-panel {
+                padding: 24px 20px 36px;
+            }
+
+            .drawer-header h3 {
+                font-size: 1.35em;
+            }
+
+            .drawer-ingredients li {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
             <h1>🍳 FlavorHub</h1>
             <p>GitHub Copilot Advanced Workshop - Java & Spring Boot Edition</p>
         </header>
-        
+
         <div class="content">
             <div class="welcome">
                 <h2>Welcome to the FlavorHub Workshop!</h2>
                 <p>Learn to use GitHub Copilot by building features for this recipe recommendation application</p>
             </div>
-            
+
+            <section class="daily-section" aria-labelledby="daily-recipe-heading">
+                <h2 id="daily-recipe-heading">Recipe of the Day</h2>
+                <p class="section-intro">Fresh inspiration every day, curated from the FlavorHub kitchen.</p>
+                <p id="daily-recipe-message" class="daily-message">Loading today's featured recipe...</p>
+                <div id="daily-spinner" class="daily-spinner" role="status" aria-live="assertive" aria-hidden="true"
+                    hidden>
+                    <span class="spinner-circle"></span>
+                </div>
+                <article id="daily-recipe-card" class="daily-card" hidden>
+                    <h3 id="daily-recipe-name"></h3>
+                    <p id="daily-recipe-description"></p>
+                    <div class="daily-badges">
+                        <span id="daily-recipe-cuisine" class="badge badge-cuisine"></span>
+                        <span id="daily-recipe-difficulty" class="badge badge-difficulty"></span>
+                    </div>
+                    <div class="daily-times">
+                        <span id="daily-prep-time"></span>
+                        <span id="daily-cook-time"></span>
+                    </div>
+                    <a id="daily-recipe-link" class="daily-button" href="#" target="_blank" rel="noopener">🍽️ View Full
+                        Recipe</a>
+                </article>
+                <div class="daily-actions">
+                    <button id="daily-random-button" type="button" class="daily-random-button">🎲 Show Random
+                        Recipe</button>
+                </div>
+            </section>
+
+            <section class="search-section" aria-labelledby="recipe-search-title">
+                <h2 id="recipe-search-title">Discover Recipes Instantly</h2>
+                <p>Start typing to explore recipes by name, cuisine, or difficulty.</p>
+                <div class="search-control" id="recipe-search-control">
+                    <label for="recipe-search" class="visually-hidden">Search recipes</label>
+                    <input type="search" id="recipe-search" class="search-input"
+                        placeholder="Search for tacos, Italian, easy dinners..." autocomplete="off"
+                        aria-autocomplete="list" aria-expanded="false" aria-controls="recipe-suggestions">
+                    <ul id="recipe-suggestions" class="search-suggestions" role="listbox" hidden></ul>
+                </div>
+                <div class="search-results" id="recipe-results" aria-live="polite"></div>
+                <p id="search-empty-state" class="search-empty" hidden>No recipes found. Try a different search.</p>
+            </section>
+
             <div class="features">
                 <div class="feature-card">
                     <h3>📦 Pantry Management</h3>
                     <p>Keep track of ingredients you have on hand with quantities and notes</p>
                 </div>
-                
+
                 <div class="feature-card">
                     <h3>📖 Recipe Browser</h3>
                     <p>Browse through a collection of recipes with detailed instructions</p>
-                    <a href="/recipes" style="display: inline-block; margin-top: 10px; color: #667eea; text-decoration: none; font-weight: 500;">Browse Recipes →</a>
+                    <a href="/recipes"
+                        style="display: inline-block; margin-top: 10px; color: #667eea; text-decoration: none; font-weight: 500;">Browse
+                        Recipes →</a>
                 </div>
-                
+
                 <div class="feature-card">
                     <h3>🎯 Smart Recommendations</h3>
                     <p>Get recipe suggestions based on ingredients in your pantry</p>
                 </div>
-                
+
                 <div class="feature-card">
                     <h3>🔍 Advanced Search</h3>
                     <p>Filter recipes by difficulty, cuisine type, and cooking time</p>
                 </div>
             </div>
-            
+
             <div class="api-section">
                 <h2>API Endpoints</h2>
                 <p style="margin-bottom: 20px; color: #666;">
-                    This application provides a RESTful API. Test these endpoints using tools like Postman, curl, or your browser.
+                    This application provides a RESTful API. Test these endpoints using tools like Postman, curl, or
+                    your browser.
                 </p>
-                
+
                 <div class="api-endpoints">
                     <div class="endpoint">
                         <span class="method get">GET</span>
@@ -223,21 +1144,689 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="workshop-info">
                 <h3>⚠️ Workshop Note</h3>
                 <p>
-                    This application is intentionally incomplete! Throughout the workshop, you'll use 
-                    GitHub Copilot to implement missing features, add tests, improve code quality, 
+                    This application is intentionally incomplete! Throughout the workshop, you'll use
+                    GitHub Copilot to implement missing features, add tests, improve code quality,
                     and explore advanced AI-assisted development techniques.
                 </p>
             </div>
         </div>
-        
+
         <footer>
             <p>Built with Spring Boot | Part of the GitHub Copilot Advanced Workshop</p>
             <p>Access H2 Console at: <a href="/h2-console" target="_blank">/h2-console</a></p>
         </footer>
     </div>
+    <div id="recipe-detail-overlay" class="drawer-overlay" hidden>
+        <aside id="recipe-detail-panel" class="drawer-panel" role="dialog" aria-modal="true"
+            aria-labelledby="recipe-detail-title">
+            <button type="button" id="recipe-detail-close" class="drawer-close"
+                aria-label="Close recipe details">✕</button>
+            <header class="drawer-header">
+                <h3 id="recipe-detail-title"></h3>
+                <p id="recipe-detail-description" class="drawer-description"></p>
+            </header>
+            <div class="drawer-badges">
+                <span id="drawer-cuisine" class="badge badge-cuisine"></span>
+                <span id="drawer-difficulty" class="badge badge-difficulty"></span>
+                <span id="drawer-servings" class="badge badge-cuisine"></span>
+            </div>
+            <div class="drawer-times">
+                <span id="drawer-prep"></span>
+                <span id="drawer-cook"></span>
+                <span id="drawer-total"></span>
+            </div>
+            <section class="drawer-section">
+                <h4>Ingredients</h4>
+                <ul id="drawer-ingredients" class="drawer-ingredients"></ul>
+            </section>
+            <section class="drawer-section">
+                <h4>Instructions</h4>
+                <ol id="drawer-instructions" class="drawer-instructions"></ol>
+            </section>
+        </aside>
+    </div>
+    <script>
+        (function () {
+            function escapeHtml(value) {
+                const stringValue = value === undefined || value === null ? '' : String(value);
+                const replacements = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                };
+                return stringValue.replace(/[&<>"']/g, function (character) {
+                    return replacements[character] || character;
+                });
+            }
+
+            const dailyElements = {
+                card: document.getElementById('daily-recipe-card'),
+                message: document.getElementById('daily-recipe-message'),
+                spinner: document.getElementById('daily-spinner'),
+                name: document.getElementById('daily-recipe-name'),
+                description: document.getElementById('daily-recipe-description'),
+                cuisine: document.getElementById('daily-recipe-cuisine'),
+                difficulty: document.getElementById('daily-recipe-difficulty'),
+                prepTime: document.getElementById('daily-prep-time'),
+                cookTime: document.getElementById('daily-cook-time'),
+                link: document.getElementById('daily-recipe-link'),
+                randomButton: document.getElementById('daily-random-button')
+            };
+
+            const drawerElements = {
+                overlay: document.getElementById('recipe-detail-overlay'),
+                panel: document.getElementById('recipe-detail-panel'),
+                close: document.getElementById('recipe-detail-close'),
+                title: document.getElementById('recipe-detail-title'),
+                description: document.getElementById('recipe-detail-description'),
+                cuisine: document.getElementById('drawer-cuisine'),
+                difficulty: document.getElementById('drawer-difficulty'),
+                servings: document.getElementById('drawer-servings'),
+                prep: document.getElementById('drawer-prep'),
+                cook: document.getElementById('drawer-cook'),
+                total: document.getElementById('drawer-total'),
+                ingredients: document.getElementById('drawer-ingredients'),
+                instructions: document.getElementById('drawer-instructions')
+            };
+
+            const difficultyClasses = ['difficulty-easy', 'difficulty-medium', 'difficulty-hard'];
+            let lastRecipeId = null;
+            let lastRecipeData = null;
+            let drawerDismissTimer = null;
+
+            function toggleRandomButton(disabled) {
+                if (dailyElements.randomButton) {
+                    const isDisabled = !!disabled;
+                    dailyElements.randomButton.disabled = isDisabled;
+                    dailyElements.randomButton.classList.toggle('is-disabled', isDisabled);
+                }
+            }
+
+            function showLoading(message) {
+                if (dailyElements.message) {
+                    dailyElements.message.textContent = message || "Loading today's featured recipe...";
+                    dailyElements.message.hidden = false;
+                }
+                if (dailyElements.spinner) {
+                    dailyElements.spinner.hidden = false;
+                    dailyElements.spinner.classList.add('is-active');
+                    dailyElements.spinner.setAttribute('aria-hidden', 'false');
+                }
+                toggleRandomButton(true);
+                if (dailyElements.card) {
+                    dailyElements.card.hidden = true;
+                    dailyElements.card.style.opacity = '0';
+                    dailyElements.card.style.transform = 'translateY(10px) scale(0.98)';
+                }
+            }
+
+            function hideLoading() {
+                if (dailyElements.spinner) {
+                    dailyElements.spinner.hidden = true;
+                    dailyElements.spinner.classList.remove('is-active');
+                    dailyElements.spinner.setAttribute('aria-hidden', 'true');
+                }
+                toggleRandomButton(false);
+            }
+
+            function applyDifficultyBadge(element, difficultyText) {
+                if (!element) {
+                    return;
+                }
+                for (let i = 0; i < difficultyClasses.length; i += 1) {
+                    element.classList.remove(difficultyClasses[i]);
+                }
+                const normalized = difficultyText ? difficultyText.trim().toLowerCase() : '';
+                if (normalized === 'easy') {
+                    element.classList.add('difficulty-easy');
+                } else if (normalized === 'medium') {
+                    element.classList.add('difficulty-medium');
+                } else if (normalized === 'hard') {
+                    element.classList.add('difficulty-hard');
+                }
+                const displayText = difficultyText && difficultyText.trim() ? difficultyText.trim() : 'Unspecified';
+                element.textContent = 'Difficulty: ' + displayText;
+            }
+
+            function handleDailyError(message) {
+                hideLoading();
+                if (dailyElements.message) {
+                    dailyElements.message.hidden = false;
+                    dailyElements.message.textContent = message;
+                }
+                if (dailyElements.card) {
+                    dailyElements.card.hidden = true;
+                    dailyElements.card.style.opacity = '0';
+                    dailyElements.card.style.transform = 'translateY(10px) scale(0.98)';
+                }
+                lastRecipeData = null;
+            }
+
+            let drawerIsOpen = false;
+            let previousBodyOverflow = '';
+            let drawerTriggerElement = null;
+
+            function setTimeText(element, label, minutes) {
+                if (!element) {
+                    return;
+                }
+                if (typeof minutes === 'number' && !Number.isNaN(minutes)) {
+                    element.textContent = label + ': ' + minutes + ' min';
+                } else {
+                    element.textContent = label + ': N/A';
+                }
+            }
+
+            function formatQuantity(quantity, unit) {
+                if (typeof quantity !== 'number' || Number.isNaN(quantity)) {
+                    return unit && unit.trim() ? unit.trim() : 'As needed';
+                }
+                const rounded = Math.round((quantity + Number.EPSILON) * 100) / 100;
+                const unitText = unit && unit.trim() ? ' ' + unit.trim() : '';
+                return rounded + unitText;
+            }
+
+            function clearChildren(element) {
+                if (!element) {
+                    return;
+                }
+                while (element.firstChild) {
+                    element.removeChild(element.firstChild);
+                }
+            }
+
+            function populateRecipeDrawer(recipe) {
+                if (!recipe || !drawerElements.title) {
+                    return;
+                }
+
+                lastRecipeData = recipe;
+
+                const name = recipe.name && recipe.name.trim() ? recipe.name.trim() : 'Recipe Details';
+                drawerElements.title.textContent = name;
+
+                if (drawerElements.description) {
+                    const description = recipe.description && recipe.description.trim() ? recipe.description.trim() : 'No description provided yet.';
+                    drawerElements.description.textContent = description;
+                }
+
+                if (drawerElements.cuisine) {
+                    const cuisineText = recipe.cuisineType && recipe.cuisineType.trim() ? recipe.cuisineType.trim() : 'Unknown';
+                    drawerElements.cuisine.textContent = 'Cuisine: ' + cuisineText;
+                }
+
+                if (drawerElements.difficulty) {
+                    applyDifficultyBadge(drawerElements.difficulty, recipe.difficultyLevel);
+                }
+
+                if (drawerElements.servings) {
+                    const servings = typeof recipe.servings === 'number' && !Number.isNaN(recipe.servings) ? recipe.servings : null;
+                    drawerElements.servings.textContent = 'Serves: ' + (servings !== null ? servings : 'N/A');
+                }
+
+                const prepMinutes = typeof recipe.prepTime === 'number' && !Number.isNaN(recipe.prepTime) ? recipe.prepTime : null;
+                const cookMinutes = typeof recipe.cookTime === 'number' && !Number.isNaN(recipe.cookTime) ? recipe.cookTime : null;
+                const totalMinutes = (prepMinutes || 0) + (cookMinutes || 0);
+
+                setTimeText(drawerElements.prep, 'Prep', prepMinutes);
+                setTimeText(drawerElements.cook, 'Cook', cookMinutes);
+                setTimeText(drawerElements.total, 'Total', totalMinutes > 0 ? totalMinutes : null);
+
+                if (drawerElements.ingredients) {
+                    clearChildren(drawerElements.ingredients);
+                    const ingredients = Array.isArray(recipe.ingredients) ? recipe.ingredients : [];
+                    if (!ingredients.length) {
+                        const emptyItem = document.createElement('li');
+                        emptyItem.classList.add('drawer-empty');
+                        emptyItem.textContent = 'Ingredients are not available.';
+                        drawerElements.ingredients.appendChild(emptyItem);
+                    } else {
+                        ingredients.forEach(function (ingredient) {
+                            const item = document.createElement('li');
+                            const nameSpan = document.createElement('span');
+                            nameSpan.textContent = ingredient && ingredient.ingredientName ? ingredient.ingredientName : 'Ingredient';
+                            if (ingredient && ingredient.notes && ingredient.notes.trim()) {
+                                nameSpan.appendChild(document.createElement('br'));
+                                const notesSpan = document.createElement('span');
+                                notesSpan.classList.add('notes');
+                                notesSpan.textContent = ingredient.notes.trim();
+                                nameSpan.appendChild(notesSpan);
+                            }
+                            item.appendChild(nameSpan);
+
+                            const amountSpan = document.createElement('span');
+                            const amountText = formatQuantity(ingredient && typeof ingredient.quantity === 'number' ? ingredient.quantity : NaN, ingredient ? ingredient.unit : '');
+                            amountSpan.textContent = amountText;
+                            item.appendChild(amountSpan);
+
+                            drawerElements.ingredients.appendChild(item);
+                        });
+                    }
+                }
+
+                if (drawerElements.instructions) {
+                    clearChildren(drawerElements.instructions);
+                    const instructions = Array.isArray(recipe.instructions) ? recipe.instructions : [];
+                    if (!instructions.length) {
+                        const emptyStep = document.createElement('li');
+                        emptyStep.classList.add('drawer-empty');
+                        emptyStep.textContent = 'Instructions are not available.';
+                        drawerElements.instructions.appendChild(emptyStep);
+                    } else {
+                        instructions.forEach(function (step) {
+                            const stepItem = document.createElement('li');
+                            stepItem.textContent = step && step.trim ? step.trim() : step;
+                            drawerElements.instructions.appendChild(stepItem);
+                        });
+                    }
+                }
+            }
+
+            function openRecipeDrawer(recipe, triggerElement) {
+                if (!drawerElements.overlay || !drawerElements.panel) {
+                    return;
+                }
+
+                populateRecipeDrawer(recipe);
+
+                drawerTriggerElement = triggerElement || null;
+                drawerElements.overlay.hidden = false;
+                drawerElements.overlay.setAttribute('aria-hidden', 'false');
+                drawerElements.panel.scrollTop = 0;
+                if (drawerDismissTimer) {
+                    clearTimeout(drawerDismissTimer);
+                }
+
+                requestAnimationFrame(function () {
+                    drawerElements.panel.classList.add('is-open');
+                });
+
+                previousBodyOverflow = document.body.style.overflow;
+                document.body.style.overflow = 'hidden';
+                drawerIsOpen = true;
+            }
+
+            function closeRecipeDrawer() {
+                if (!drawerElements.overlay || !drawerElements.panel || drawerElements.overlay.hidden) {
+                    return;
+                }
+
+                drawerElements.panel.classList.remove('is-open');
+                drawerElements.overlay.setAttribute('aria-hidden', 'true');
+
+                if (drawerDismissTimer) {
+                    clearTimeout(drawerDismissTimer);
+                }
+
+                drawerDismissTimer = setTimeout(function () {
+                    drawerElements.overlay.hidden = true;
+                }, 480);
+
+                document.body.style.overflow = previousBodyOverflow || '';
+                drawerIsOpen = false;
+
+                if (drawerTriggerElement && typeof drawerTriggerElement.focus === 'function') {
+                    drawerTriggerElement.focus();
+                }
+                drawerTriggerElement = null;
+            }
+
+            async function resolveRecipeDataForDrawer() {
+                if (lastRecipeData && Array.isArray(lastRecipeData.ingredients) && Array.isArray(lastRecipeData.instructions)) {
+                    return lastRecipeData;
+                }
+                if (lastRecipeId === null || lastRecipeId === undefined) {
+                    return null;
+                }
+                try {
+                    const response = await fetch('/api/recipes/' + encodeURIComponent(String(lastRecipeId)));
+                    if (!response.ok) {
+                        throw new Error('Request failed with status ' + response.status);
+                    }
+                    const recipe = await response.json();
+                    return recipe && typeof recipe === 'object' ? recipe : null;
+                } catch (error) {
+                    console.error('Error fetching recipe details:', error);
+                    return null;
+                }
+            }
+
+            async function handleViewFullRecipe(event) {
+                if (event) {
+                    event.preventDefault();
+                }
+
+                const recipe = await resolveRecipeDataForDrawer();
+                if (!recipe) {
+                    console.warn('No recipe data available to display.');
+                    return;
+                }
+                openRecipeDrawer(recipe, event ? event.currentTarget : null);
+            }
+
+            function renderDailyRecipe(recipe) {
+                if (!dailyElements.card || !dailyElements.message || !dailyElements.name || !dailyElements.description ||
+                    !dailyElements.cuisine || !dailyElements.difficulty || !dailyElements.prepTime || !dailyElements.cookTime || !dailyElements.link) {
+                    return;
+                }
+
+                const nameSource = recipe && recipe.name ? recipe.name : 'Featured Recipe';
+                const descriptionSource = recipe && recipe.description ? recipe.description : 'Discover this delicious creation from FlavorHub.';
+                const cuisineSource = recipe && recipe.cuisineType ? recipe.cuisineType : 'Unknown';
+                const difficultySource = recipe && recipe.difficultyLevel ? recipe.difficultyLevel : 'Unspecified';
+                const prepTime = recipe && typeof recipe.prepTime === 'number' ? recipe.prepTime : null;
+                const cookTime = recipe && typeof recipe.cookTime === 'number' ? recipe.cookTime : null;
+
+                dailyElements.name.textContent = nameSource;
+                dailyElements.description.textContent = descriptionSource;
+                dailyElements.cuisine.textContent = 'Cuisine: ' + cuisineSource;
+                applyDifficultyBadge(dailyElements.difficulty, difficultySource);
+                dailyElements.prepTime.textContent = 'Prep: ' + (prepTime !== null ? prepTime + ' min' : 'N/A');
+                dailyElements.cookTime.textContent = 'Cook: ' + (cookTime !== null ? cookTime + ' min' : 'N/A');
+
+                const recipeId = recipe && recipe.id !== null && recipe.id !== undefined ? String(recipe.id) : '';
+                if (recipeId) {
+                    dailyElements.link.href = '/api/recipes/' + encodeURIComponent(recipeId);
+                    dailyElements.link.setAttribute('aria-label', 'View full recipe for ' + nameSource);
+                } else {
+                    dailyElements.link.href = '/recipes';
+                    dailyElements.link.setAttribute('aria-label', 'View all recipes');
+                }
+
+                hideLoading();
+                dailyElements.message.hidden = true;
+                dailyElements.card.hidden = false;
+                dailyElements.card.classList.remove('fade-scale-in');
+                void dailyElements.card.offsetWidth;
+                dailyElements.card.classList.add('fade-scale-in');
+                dailyElements.card.style.opacity = '1';
+                dailyElements.card.style.transform = '';
+                lastRecipeId = recipe && recipe.id !== null && recipe.id !== undefined ? recipe.id : null;
+                lastRecipeData = recipe && typeof recipe === 'object' ? recipe : null;
+                if (drawerIsOpen && lastRecipeData) {
+                    populateRecipeDrawer(lastRecipeData);
+                }
+            }
+
+            function selectRandomRecipe(recipes) {
+                if (!Array.isArray(recipes) || !recipes.length) {
+                    return null;
+                }
+
+                if (recipes.length === 1) {
+                    return recipes[0];
+                }
+
+                let candidate = null;
+                let attempts = 0;
+                while (attempts < 6) {
+                    candidate = recipes[Math.floor(Math.random() * recipes.length)];
+                    if (!candidate || candidate.id === undefined || candidate.id === null || candidate.id !== lastRecipeId) {
+                        break;
+                    }
+                    attempts += 1;
+                }
+
+                return candidate || recipes[0];
+            }
+
+            async function fetchDailyRecipe(options) {
+                if (!dailyElements.card || !dailyElements.message) {
+                    return;
+                }
+
+                const config = options || {};
+                const loadingMessage = config.loadingMessage || (config.random ? 'Fetching a tasty surprise...' : "Loading today's featured recipe...");
+                showLoading(loadingMessage);
+
+                try {
+                    let recipe = null;
+
+                    if (config.random) {
+                        const response = await fetch('/api/recipes');
+                        if (!response.ok) {
+                            throw new Error('Random recipe request failed with status ' + response.status);
+                        }
+                        const recipes = await response.json();
+                        const recipeList = Array.isArray(recipes) ? recipes : [];
+                        recipe = selectRandomRecipe(recipeList);
+                        if (!recipe) {
+                            throw new Error('Unable to pick a recipe from the available list');
+                        }
+                    } else {
+                        const response = await fetch('/api/recipes/daily');
+                        if (!response.ok) {
+                            throw new Error('Daily recipe request failed with status ' + response.status);
+                        }
+
+                        const daily = await response.json();
+                        if (!daily || typeof daily !== 'object') {
+                            throw new Error('Daily recipe response did not include data');
+                        }
+                        recipe = daily;
+                    }
+
+                    renderDailyRecipe(recipe);
+                } catch (error) {
+                    console.error('Error loading recipe of the day:', error);
+                    handleDailyError(config.random ? 'Unable to load a random recipe right now. Please try again.' : 'Unable to load today\'s recipe. Please try again later.');
+                }
+            }
+
+            function initDailyRecipe() {
+                if (!dailyElements.card || !dailyElements.message || !dailyElements.name || !dailyElements.description ||
+                    !dailyElements.cuisine || !dailyElements.difficulty || !dailyElements.prepTime || !dailyElements.cookTime || !dailyElements.link) {
+                    return;
+                }
+                fetchDailyRecipe();
+                dailyElements.link.addEventListener('click', handleViewFullRecipe);
+                if (dailyElements.randomButton) {
+                    dailyElements.randomButton.addEventListener('click', function () {
+                        fetchDailyRecipe({ random: true, loadingMessage: 'Fetching a tasty surprise...' });
+                        if (drawerIsOpen) {
+                            closeRecipeDrawer();
+                        }
+                    });
+                }
+            }
+
+            initDailyRecipe();
+
+            if (drawerElements.close) {
+                drawerElements.close.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    closeRecipeDrawer();
+                });
+            }
+
+            if (drawerElements.overlay) {
+                drawerElements.overlay.addEventListener('click', function (event) {
+                    if (event.target === drawerElements.overlay) {
+                        closeRecipeDrawer();
+                    }
+                });
+            }
+
+            document.addEventListener('keydown', function (event) {
+                if (event.key === 'Escape' && drawerElements.overlay && !drawerElements.overlay.hidden) {
+                    closeRecipeDrawer();
+                }
+            });
+
+            const searchInput = document.getElementById('recipe-search');
+            const suggestionsList = document.getElementById('recipe-suggestions');
+            const resultsContainer = document.getElementById('recipe-results');
+            const emptyState = document.getElementById('search-empty-state');
+            const searchControl = document.getElementById('recipe-search-control');
+
+            if (searchInput && suggestionsList && resultsContainer && emptyState && searchControl) {
+                let debounceTimer = null;
+                let activeRequestId = 0;
+                const defaultEmptyMessage = emptyState.textContent || 'No recipes found. Try a different search.';
+
+                function clearResults() {
+                    resultsContainer.innerHTML = '';
+                }
+
+                function clearSuggestions() {
+                    suggestionsList.innerHTML = '';
+                    suggestionsList.hidden = true;
+                    searchInput.setAttribute('aria-expanded', 'false');
+                }
+
+                function updateEmptyState(shouldShow, message) {
+                    const finalMessage = message === undefined ? defaultEmptyMessage : message;
+                    emptyState.hidden = !shouldShow;
+                    emptyState.textContent = finalMessage;
+                }
+
+                function renderRecipes(recipes) {
+                    clearResults();
+                    if (!recipes.length) {
+                        updateEmptyState(true);
+                        return;
+                    }
+
+                    updateEmptyState(false);
+                    recipes.forEach((recipe, index) => {
+                        const card = document.createElement('article');
+                        card.classList.add('recipe-card', 'fade-in-up');
+                        card.style.animationDelay = String(Math.min(index * 70, 280)) + 'ms';
+
+                        const nameSource = recipe && recipe.name ? recipe.name : 'Untitled Recipe';
+                        const cuisineSource = recipe && recipe.cuisineType ? recipe.cuisineType : 'Unknown';
+                        const difficultySource = recipe && recipe.difficultyLevel ? recipe.difficultyLevel : 'Unspecified';
+                        const recipeName = escapeHtml(nameSource);
+                        const recipeCuisine = escapeHtml(cuisineSource);
+                        const recipeDifficulty = escapeHtml(difficultySource);
+
+                        card.innerHTML = `
+                            <h3>${recipeName}</h3>
+                            <div class="recipe-meta">
+                                <span>Cuisine: ${recipeCuisine}</span>
+                                <span class="badge">${recipeDifficulty}</span>
+                            </div>
+                        `.trim();
+
+                        resultsContainer.appendChild(card);
+                    });
+                }
+
+                function renderSuggestions(recipes, term) {
+                    suggestionsList.innerHTML = '';
+                    const trimmed = term.trim();
+                    if (!trimmed || !recipes.length) {
+                        clearSuggestions();
+                        return;
+                    }
+
+                    recipes.slice(0, 6).forEach((recipe) => {
+                        const listItem = document.createElement('li');
+                        const recipeName = recipe && recipe.name ? recipe.name : 'Untitled Recipe';
+                        listItem.textContent = recipeName;
+                        listItem.dataset.value = recipeName;
+                        listItem.setAttribute('role', 'option');
+                        suggestionsList.appendChild(listItem);
+                    });
+
+                    suggestionsList.hidden = false;
+                    searchInput.setAttribute('aria-expanded', 'true');
+                }
+
+                async function performSearch(term, options) {
+                    const trimmed = term.trim();
+                    if (!trimmed) {
+                        clearResults();
+                        updateEmptyState(false, defaultEmptyMessage);
+                        clearSuggestions();
+                        return;
+                    }
+
+                    const requestId = ++activeRequestId;
+                    const config = options || {};
+
+                    try {
+                        const response = await fetch('/api/recipes/search?query=' + encodeURIComponent(trimmed));
+                        if (!response.ok) {
+                            throw new Error('Search request failed with status ' + response.status);
+                        }
+
+                        const recipes = await response.json();
+                        if (requestId !== activeRequestId) {
+                            return;
+                        }
+
+                        const recipeList = Array.isArray(recipes) ? recipes : [];
+                        renderRecipes(recipeList);
+                        if (config.skipSuggestions) {
+                            clearSuggestions();
+                        } else {
+                            renderSuggestions(recipeList, trimmed);
+                        }
+                    } catch (error) {
+                        console.error('Error searching recipes:', error);
+                        if (requestId !== activeRequestId) {
+                            return;
+                        }
+                        clearResults();
+                        updateEmptyState(true, 'Unable to load recipes right now. Please try again.');
+                        clearSuggestions();
+                    }
+                }
+
+                searchInput.addEventListener('input', (event) => {
+                    const term = event.target.value;
+                    clearTimeout(debounceTimer);
+                    if (!term.trim()) {
+                        clearResults();
+                        updateEmptyState(false, defaultEmptyMessage);
+                        clearSuggestions();
+                        return;
+                    }
+
+                    debounceTimer = setTimeout(() => {
+                        performSearch(term);
+                    }, 250);
+                });
+
+                searchInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Escape') {
+                        clearSuggestions();
+                    }
+                });
+
+                searchInput.addEventListener('focus', () => {
+                    if (searchInput.value.trim() && suggestionsList.children.length) {
+                        suggestionsList.hidden = false;
+                        searchInput.setAttribute('aria-expanded', 'true');
+                    }
+                });
+
+                suggestionsList.addEventListener('mousedown', (event) => {
+                    const target = event.target.closest('li[data-value]');
+                    if (!target) {
+                        return;
+                    }
+                    event.preventDefault();
+                    const value = target.dataset.value || '';
+                    searchInput.value = value;
+                    performSearch(value, { skipSuggestions: true });
+                });
+
+                document.addEventListener('click', (event) => {
+                    if (!searchControl.contains(event.target)) {
+                        clearSuggestions();
+                    }
+                });
+            }
+        })();
+    </script>
 </body>
+
 </html>

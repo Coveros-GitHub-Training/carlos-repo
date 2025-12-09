@@ -28,6 +28,14 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
      * Find recipes with names containing the search term (case-insensitive)
      */
     List<Recipe> findByNameContainingIgnoreCase(String searchTerm);
+
+    /**
+     * Find recipes by matching name, cuisine type, or difficulty level.
+     */
+    List<Recipe> findByNameContainingIgnoreCaseOrCuisineTypeContainingIgnoreCaseOrDifficultyLevelContainingIgnoreCase(
+            String nameSearchTerm,
+            String cuisineSearchTerm,
+            String difficultySearchTerm);
     
     /**
      * Find recipes that can be made in a specific time (total time = prep + cook)

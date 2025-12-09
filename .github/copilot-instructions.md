@@ -195,4 +195,4 @@ async function fetchRecipes() {
 
 - [Spring Boot Best Practices](https://spring.io/guides)
 - [Effective Java (Joshua Bloch)](https://www.oreilly.com/library/view/effective-java/9780134686097/)
-- [REST API Design Best Practices](https://restfulapi.net/)
+<!-- - [REST API Design Best Practices](https://restfulapi.net/) -->
